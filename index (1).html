@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Auditorias INP - MXRC03</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f1f5f9;min-height:100vh}
+.topbar{background:#111827;display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.badge{background:#FFD000;color:#111;font-weight:700;font-size:13px;padding:6px 10px;border-radius:6px}
+.ttl{color:#fff;font-size:15px;font-weight:600}
+.tst{color:#9ca3af;font-size:11px}
+.tright{font-size:12px;color:#9ca3af;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 24px 0}
+.mc{background:#fff;border-radius:10px;padding:16px 20px;border-top:4px solid #f59e0b}
+.mc.ni{border-top-color:#ef4444}.mc.na{border-top-color:#8b5cf6}.mc.se{border-top-color:#22c55e}
+.ml{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em}
+.mv{font-size:36px;font-weight:700;color:#f59e0b;line-height:1.1;margin:4px 0}
+.mc.ni .mv{color:#ef4444}.mc.na .mv{color:#8b5cf6}.mc.se .mv{color:#22c55e}
+.ms{font-size:11px;color:#9ca3af}
+.fbar{display:flex;align-items:center;gap:10px;padding:12px 24px;background:#fff;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;margin-top:16px}
+.fbar label{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase}
+.fbar input{border:1px solid #e5e7eb;border-radius:6px;padding:6px 10px;font-size:12px;color:#111;font-family:inherit;outline:none}
+.bf{background:#111827;color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:12px;cursor:pointer;font-family:inherit}
+.bfl{background:#fff;color:#374151;border:1px solid #e5e7eb;border-radius:6px;padding:7px 14px;font-size:12px;cursor:pointer;font-family:inherit}
+.fres{font-size:11px;color:#6b7280;margin-left:auto}.fact{color:#1d4ed8;font-weight:600}
+.wrap{display:grid;grid-template-columns:370px 1fr;gap:12px;padding:12px 24px 24px}
+.panel{background:#fff;border-radius:10px;padding:20px}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.pt{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#111}
+.pb{font-size:11px;background:#f3f4f6;color:#6b7280;padding:3px 10px;border-radius:20px}
+.pb.gr{background:#f0fdf4;color:#166534}.pb.rd{background:#fef2f2;color:#991b1b}.pb.ye{background:#fef9c3;color:#854d0e}
+.fi{margin-bottom:13px}
+.fi label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;margin-bottom:4px}
+.fi input,.fi textarea{width:100%;border:1px solid #e5e7eb;border-radius:6px;padding:8px 12px;font-size:13px;color:#111;outline:none;font-family:inherit}
+.fi textarea{resize:vertical;min-height:56px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid #e5e7eb;border-radius:20px;padding:5px 11px;font-size:12px;cursor:pointer;color:#374151;background:#fff;user-select:none}
+.chip.active{background:#111;color:#fff;border-color:#111}
+.fsec{border:2px dashed #e5e7eb;border-radius:8px;padding:12px;background:#fafafa;margin-bottom:13px}
+.fh{font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;margin-bottom:8px}
+.fa{display:flex;gap:8px;margin-bottom:8px}
+.bfoto{flex:1;border:1px solid #e5e7eb;background:#fff;border-radius:6px;padding:7px;font-size:12px;cursor:pointer;text-align:center;color:#374151;font-family:inherit}
+.fgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.ft{position:relative;aspect-ratio:1;border-radius:5px;overflow:hidden;background:#e5e7eb}
+.ft img{width:100%;height:100%;object-fit:cover}
+.ftd{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50%;width:17px;height:17px;font-size:11px;cursor:pointer;font-family:inherit;line-height:1}
+.fcnt{font-size:11px;color:#6b7280;margin-top:4px;text-align:center}
+.bp{width:100%;background:#111827;color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;font-family:inherit}
+.bp:hover{background:#1f2937}
+.bs{width:100%;background:#fff;color:#374151;border:1px solid #e5e7eb;border-radius:8px;padding:9px;font-size:12px;cursor:pointer;margin-top:8px;font-family:inherit}
+.bs:hover{background:#f9fafb}
+.gss{display:flex;align-items:center;gap:6px;font-size:11px;margin-top:8px;padding:7px 10px;border-radius:6px}
+.gso{background:#f0fdf4;color:#166534}.gse{background:#fef2f2;color:#991b1b}.gsl{background:#eff6ff;color:#1e40af}
+.gsd{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;display:inline-block}
+.sinfo{border-radius:8px;padding:8px 12px;font-size:11px;margin-bottom:8px}
+.sinfo.ok{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.sinfo.err{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.sinfo.load{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.rcol{display:flex;flex-direction:column;gap:12px}
+.thr{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.tt{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#111}
+.tc{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sis{display:flex;align-items:center;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden}
+.sis input{border:none;padding:7px 12px;font-size:12px;color:#111;outline:none;font-family:inherit;width:180px}
+.sis button{background:#fff;border:none;border-left:1px solid #e5e7eb;padding:7px 11px;cursor:pointer;font-size:13px;color:#6b7280;font-family:inherit}
+.tpills{display:flex;gap:5px;flex-wrap:wrap}
+.tp{border:1px solid #e5e7eb;border-radius:20px;padding:4px 11px;font-size:11px;font-weight:600;cursor:pointer;color:#6b7280;background:#fff;user-select:none}
+.tp.active{background:#111827;color:#fff;border-color:#111827}
+.tp.pNI.active{background:#ef4444;border-color:#ef4444}.tp.pRE.active{background:#d97706;border-color:#d97706}
+.tp.pNA.active{background:#7c3aed;border-color:#7c3aed}.tp.pDI.active{background:#2563eb;border-color:#2563eb}.tp.pWD.active{background:#059669;border-color:#059669}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
+thead tr{background:#f8fafc}
+th{padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid #f3f4f6;color:#374151;vertical-align:middle}
+tr:last-child td{border-bottom:none}tr.hl td{background:#fffbeb}tr:hover td{background:#f8fafc}
+.rb{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;display:inline-block}
+.rNI{background:#fee2e2;color:#b91c1c}.rRE{background:#fef3c7;color:#92400e}
+.rNA{background:#ede9fe;color:#5b21b6}.rDI{background:#dbeafe;color:#1e40af}.rWD{background:#d1fae5;color:#065f46}
+.fpill{background:#e0f2fe;color:#0369a1;font-size:10px;padding:2px 7px;border-radius:10px;display:inline-block;cursor:pointer}
+.bver{background:#f3f4f6;color:#374151;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit}
+.nc{color:#9ca3af;font-size:11px}.empty{text-align:center;padding:28px 20px;color:#9ca3af;font-size:13px}
+.mow{display:none;background:rgba(0,0,0,.5);padding:24px}.mow.open{display:block}
+.mbox{background:#fff;border-radius:12px;max-width:640px;margin:0 auto;overflow:hidden}
+.mtop{background:#111827;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.mtt{color:#fff;font-size:14px;font-weight:600}.mis{color:#FFD000;font-size:13px;font-weight:700}
+.bcl{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+.mbody{padding:20px}.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.dl{font-size:10px;font-weight:700;text-transform:uppercase;color:#9ca3af;margin-bottom:3px}
+.dv{font-size:13px;color:#111;font-weight:500}.dobs{margin-bottom:16px}
+.dft{font-size:10px;font-weight:700;text-transform:uppercase;color:#9ca3af;margin-bottom:8px}
+.dfg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.df{aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;cursor:pointer}
+.df img{width:100%;height:100%;object-fit:cover}
+.nf{font-size:12px;color:#9ca3af;padding:12px;background:#f8fafc;border-radius:6px;text-align:center}
+.lbox{display:none;background:rgba(0,0,0,.92);padding:20px;text-align:center}.lbox.open{display:block}
+.lbox img{max-width:100%;max-height:72vh;border-radius:8px;object-fit:contain}
+.lcl{background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit;margin-bottom:12px;display:inline-block}
+.grf{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.br{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.bl{width:75px;color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.bt{flex:1;height:7px;background:#f3f4f6;border-radius:4px;overflow:hidden}.bf2{height:100%;background:#374151;border-radius:4px}
+.bn{width:20px;text-align:right;color:#6b7280;font-size:11px}
+.toast{background:#111;color:#fff;text-align:center;padding:9px 18px;font-size:13px;display:none;margin:0 24px 4px;border-radius:8px}.toast.show{display:block}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="badge">MXRC03</div>
+    <div><div class="ttl">Auditoria Dirigida INP</div><div class="tst">Control de producto Mercado Libre</div></div>
+  </div>
+  <div class="tright"><span class="dot"></span> En linea &nbsp;|&nbsp; <span id="fhora"></span></div>
+</div>
+<div class="metrics">
+  <div class="mc"><div class="ml">Total Piezas Rechazadas</div><div class="mv" id="mT">0</div><div class="ms">Acumulado total</div></div>
+  <div class="mc ni"><div class="ml">Piezas NI</div><div class="mv" id="mNI">0</div><div class="ms">No identificadas</div></div>
+  <div class="mc na"><div class="ml">Piezas NA</div><div class="mv" id="mNA">0</div><div class="ms">No aptas</div></div>
+  <div class="mc se"><div class="ml">Sellers Unicos</div><div class="mv" id="mSE">0</div><div class="ms">Ofensores detectados</div></div>
+</div>
+<div class="fbar">
+  <label>Desde</label><input type="date" id="fDesde">
+  <label>Hasta</label><input type="date" id="fHasta">
+  <button class="bf" onclick="apFiltro()">Filtrar por fecha</button>
+  <button class="bfl" onclick="clFiltro()">Limpiar</button>
+  <span class="fres" id="fRes"></span>
+</div>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+  <div class="panel">
+    <div class="ph"><span class="pt">Registrar Auditoria</span><span class="pb" id="shBadge">Conectando...</span></div>
+    <div class="sinfo ok" id="sinfo">Listo para registrar</div>
+    <div class="fi"><label>Vendedor Seller</label><input id="fSeller" type="text" placeholder="Nombre del seller..."></div>
+    <div class="fi"><label>Nombre del Auditor</label><input id="fAuditor" type="text" placeholder="Tu nombre completo..."></div>
+    <div class="fi"><label>SKU del Producto</label><input id="fSKU" type="text" placeholder="Ej. MLM-123456789"></div>
+    <div class="fi"><label>Tipo de Problema</label>
+      <div class="chips">
+        <span class="chip" data-val="NI" onclick="selChip(this)">NI No identificado</span>
+        <span class="chip" data-val="RE" onclick="selChip(this)">RE Re-etiquetado</span>
+        <span class="chip" data-val="NA" onclick="selChip(this)">NA No apto</span>
+        <span class="chip" data-val="DI" onclick="selChip(this)">DI Danado Incompleto</span>
+        <span class="chip" data-val="WD" onclick="selChip(this)">WD Rezago directo</span>
+      </div></div>
+    <div class="fi"><label>Cantidad de Piezas</label><input id="fCant" type="number" placeholder="0" min="0"></div>
+    <div class="fi"><label>IS Numero de Incidencia</label><input id="fIS" type="text" placeholder="Ej. IS-000123"></div>
+    <div class="fi"><label>Observaciones Opcional</label><textarea id="fObs" placeholder="Descripcion adicional..."></textarea></div>
+    <div class="fsec">
+      <div class="fh">Fotografias de Evidencia</div>
+      <div class="fa">
+        <button class="bfoto" onclick="document.getElementById('inCam').click()">Tomar foto</button>
+        <button class="bfoto" onclick="document.getElementById('inFoto').click()">Adjuntar imagen</button>
+      </div>
+      <input type="file" id="inCam" accept="image/*" capture="environment" onchange="addFotos(this)" style="display:none">
+      <input type="file" id="inFoto" accept="image/*" multiple onchange="addFotos(this)" style="display:none">
+      <div class="fgrid" id="fgrid"></div>
+      <div class="fcnt" id="fcnt"></div>
+    </div>
+    <div id="gss" style="display:none" class="gss"></div>
+    <button class="bp" onclick="registrar()">+ Registrar Rechazo</button>
+    <button class="bs" onclick="exportCSV()">Descargar CSV</button>
+    <button class="bs" onclick="cargarHistorial()">Recargar historial</button>
+  </div>
+  <div class="rcol">
+    <div class="panel">
+      <div class="thr">
+        <div><div class="tt">Registro Completo</div><div id="tInfo" style="font-size:11px;color:#9ca3af;margin-top:2px">0 registros</div></div>
+        <div class="tc">
+          <div class="sis"><input id="bIS" type="text" placeholder="Buscar por IS..."><button onclick="filIS()">&#128269;</button><button onclick="clIS()">&#10005;</button></div>
+          <div class="tpills">
+            <span class="tp active" data-t="" onclick="selPill(this)">Todos</span>
+            <span class="tp pNI" data-t="NI" onclick="selPill(this)">NI</span>
+            <span class="tp pRE" data-t="RE" onclick="selPill(this)">RE</span>
+            <span class="tp pNA" data-t="NA" onclick="selPill(this)">NA</span>
+            <span class="tp pDI" data-t="DI" onclick="selPill(this)">DI</span>
+            <span class="tp pWD" data-t="WD" onclick="selPill(this)">WD</span>
+          </div></div></div>
+      <div class="tw"><table>
+        <thead><tr><th>#</th><th>Seller</th><th>Auditor</th><th>SKU</th><th>IS</th><th>Tipo</th><th>Piezas</th><th>Observacion</th><th>Fotos</th><th>Fecha Hora</th><th></th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="11" class="empty">Cargando historial...</td></tr></tbody>
+      </table></div></div>
+    <div class="mow" id="mow">
+      <div class="mbox">
+        <div class="mtop"><div><div class="mtt">Detalle del Registro</div><div class="mis" id="mIS"></div></div><button class="bcl" onclick="clDet()">Cerrar</button></div>
+        <div class="mbody"><div class="dgrid" id="dgrid"></div><div class="dobs" id="dobs"></div><div class="dft">Fotografias de Evidencia</div><div id="dfotos"></div></div>
+      </div></div>
+    <div class="lbox" id="lbox"><button class="lcl" onclick="clLbox()">Cerrar imagen</button><br><img id="limg" src="" alt="foto"></div>
+    <div class="grf">
+      <div class="panel"><div class="ph"><span class="pt">Sellers Top</span><span class="pb" id="gSE">0</span></div><div id="gSEL"><div class="empty">Sin datos.</div></div></div>
+      <div class="panel"><div class="ph"><span class="pt">Por Tipo</span><span class="pb" id="gTI">0</span></div><div id="gTIL"><div class="empty">Sin datos.</div></div></div>
+      <div class="panel"><div class="ph"><span class="pt">Por SKU</span><span class="pb" id="gSK">0</span></div><div id="gSKL"><div class="empty">Sin datos.</div></div></div>
+    </div>
+  </div>
+</div>
+<script>
+var GS = 'https://script.google.com/a/macros/mercadolibre.com.mx/s/AKfycbxBa2IWv-WipRcY6tMH_81RQP7TQrtE2KRocoVUdI1oi48LhQPK6oh7MiaRDn58Bz5wwA/exec';
+var regs = [], rfil = [], fotos = [], tipSel = '', pillT = '', isQ = '';
+
+function g(id) { return document.getElementById(id); }
+function s(id, v) { g(id).textContent = v; }
+function p2(n) { return n < 10 ? '0' + String(n) : String(n); }
+function setInfo(m, t) { var el = g('sinfo'); el.textContent = m; el.className = 'sinfo ' + (t || 'load'); }
+function setBadge(m, c) { var b = g('shBadge'); b.textContent = m; b.className = 'pb ' + (c || ''); }
+
+function upFecha() {
+  var d = new Date();
+  var ds = ['dom','lun','mar','mie','jue','vie','sab'];
+  var ms = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  g('fhora').textContent = ds[d.getDay()] + ' ' + d.getDate() + ' de ' + ms[d.getMonth()] + ', ' + p2(d.getHours()) + ':' + p2(d.getMinutes());
+}
+upFecha(); setInterval(upFecha, 60000);
+
+function cargarHistorial() {
+  setInfo('Cargando historial desde Google Sheets...', 'load');
+  setBadge('Conectando...', 'ye');
+  fetch(GS)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (Array.isArray(data) && data.length > 0) {
+        regs = data; rfil = regs.slice();
+        setInfo(regs.length + ' registros cargados', 'ok');
+        setBadge('Sheets conectado', 'gr');
+      } else {
+        regs = []; rfil = [];
+        setInfo('Conectado - sin registros aun', 'ok');
+        setBadge('Sheets conectado', 'gr');
+      }
+      updDash();
+    })
+    .catch(function() {
+      setInfo('Listo para registrar', 'ok');
+      setBadge('Sheets conectado', 'gr');
+      regs = []; rfil = []; updDash();
+    });
+}
+
+function apFiltro() {
+  var de = g('fDesde').value, ha = g('fHasta').value;
+  rfil = regs.filter(function(r) { var f = r.fecha.substring(0,10), ok = true; if (de) ok = ok && f >= de; if (ha) ok = ok && f <= ha; return ok; });
+  if (de || ha) { g('fRes').textContent = rfil.length + ' de ' + regs.length + ' registros'; g('fRes').className = 'fres fact'; }
+  else { g('fRes').textContent = ''; g('fRes').className = 'fres'; }
+  updDash();
+}
+function clFiltro() {
+  g('fDesde').value = ''; g('fHasta').value = '';
+  rfil = regs.slice(); g('fRes').textContent = ''; g('fRes').className = 'fres'; updDash();
+}
+function selPill(el) {
+  document.querySelectorAll('.tp').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active'); pillT = el.dataset.t; rendTable();
+}
+function filIS() { isQ = g('bIS').value.trim().toLowerCase(); rendTable(); }
+function clIS() { g('bIS').value = ''; isQ = ''; clDet(); rendTable(); }
+
+function rendTable() {
+  var b = rfil.slice();
+  if (pillT) b = b.filter(function(r) { return r.tipo === pillT; });
+  if (isQ) b = b.filter(function(r) { return r.is && r.is.toLowerCase().indexOf(isQ) !== -1; });
+  g('tInfo').textContent = b.length + ' registro' + (b.length !== 1 ? 's' : '');
+  var tbody = g('tbody'); tbody.innerHTML = '';
+  if (b.length === 0) {
+    var tr = document.createElement('tr'); var td = document.createElement('td');
+    td.colSpan = 11; td.className = 'empty'; td.textContent = 'Sin registros.';
+    tr.appendChild(td); tbody.appendChild(tr); if (isQ) clDet(); return;
+  }
+  b.forEach(function(r, i) {
+    var d = new Date(r.fecha), fe = '', ho = '';
+    try { fe = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); ho = p2(d.getHours())+':'+p2(d.getMinutes()); } catch(e) { fe = r.fecha; }
+    var hh = isQ && r.is && r.is.toLowerCase().indexOf(isQ) !== -1;
+    var tr = document.createElement('tr'); if (hh) tr.className = 'hl';
+    function atd(txt, cls) { var td = document.createElement('td'); if (cls) td.className = cls; td.textContent = txt; tr.appendChild(td); }
+    atd(String(i+1),'nc'); atd(r.seller,''); atd(r.auditor,''); atd(r.sku,''); atd(r.is||'-','');
+    var tdT = document.createElement('td');
+    var spn = document.createElement('span'); spn.className = 'rb r'+r.tipo; spn.textContent = r.tipo; tdT.appendChild(spn); tr.appendChild(tdT);
+    atd(String(r.cantidad),'');
+    atd(r.obs ? r.obs.substring(0,45)+(r.obs.length>45?'...':'') : '-','');
+    var tdF = document.createElement('td');
+    if (r.fotos && r.fotos.length > 0) {
+      var fp = document.createElement('span'); fp.className = 'fpill'; fp.textContent = r.fotos.length+(r.fotos.length>1?' fotos':' foto');
+      fp.onclick = (function(rid) { return function() { verDet(rid); }; })(r.id); tdF.appendChild(fp);
+    } else { tdF.textContent = '-'; }
+    tr.appendChild(tdF);
+    var tdD = document.createElement('td'); tdD.style.fontSize = '11px'; tdD.style.whiteSpace = 'nowrap';
+    tdD.textContent = fe; var sm = document.createElement('span'); sm.style.color = '#9ca3af'; sm.textContent = ' '+ho; tdD.appendChild(sm); tr.appendChild(tdD);
+    var tdB = document.createElement('td');
+    var bv = document.createElement('button'); bv.className = 'bver'; bv.textContent = 'Ver';
+    bv.onclick = (function(rid) { return function() { verDet(rid); }; })(r.id); tdB.appendChild(bv); tr.appendChild(tdB);
+    tbody.appendChild(tr);
+  });
+  if (isQ && b.length > 0) verDet(b[0].id);
+}
+
+function verDet(id) {
+  var r = null;
+  for (var i = 0; i < regs.length; i++) { if (String(regs[i].id) === String(id)) { r = regs[i]; break; } }
+  if (!r) return;
+  var d = new Date(r.fecha), fe = '', ho = '';
+  try { fe = d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); ho = p2(d.getHours())+':'+p2(d.getMinutes()); } catch(e) { fe = r.fecha; }
+  g('mIS').textContent = r.is ? 'IS: '+r.is : 'Sin numero IS';
+  var dg = g('dgrid'); dg.innerHTML = '';
+  var rows = [['Seller',r.seller],['Auditor',r.auditor],['SKU',r.sku],['Tipo',r.tipo],['Cantidad',String(r.cantidad)+' piezas'],['Fecha',fe+' '+ho]];
+  rows.forEach(function(row) {
+    var div = document.createElement('div');
+    var dl = document.createElement('div'); dl.className = 'dl'; dl.textContent = row[0]; div.appendChild(dl);
+    if (row[0] === 'Tipo') {
+      var sp = document.createElement('span'); sp.className = 'rb r'+row[1]; sp.textContent = row[1];
+      var dv = document.createElement('div'); dv.className = 'dv'; dv.appendChild(sp); div.appendChild(dv);
+    } else { var dv2 = document.createElement('div'); dv2.className = 'dv'; dv2.textContent = row[1]; div.appendChild(dv2); }
+    dg.appendChild(div);
+  });
+  var dob = g('dobs'); dob.innerHTML = '';
+  if (r.obs) { var dl2 = document.createElement('div'); dl2.className = 'dl'; dl2.textContent = 'Observaciones'; dob.appendChild(dl2); var dv3 = document.createElement('div'); dv3.className = 'dv'; dv3.textContent = r.obs; dob.appendChild(dv3); }
+  var df = g('dfotos'); df.innerHTML = '';
+  if (r.fotos && r.fotos.length > 0) {
+    var dfg = document.createElement('div'); dfg.className = 'dfg';
+    r.fotos.forEach(function(src) {
+      var dfd = document.createElement('div'); dfd.className = 'df';
+      var img = document.createElement('img'); img.src = src; img.alt = 'foto'; dfd.appendChild(img);
+      dfd.onclick = (function(sc) { return function() { g('limg').src = sc; g('lbox').classList.add('open'); }; })(src);
+      dfg.appendChild(dfd);
+    });
+    df.appendChild(dfg);
+  } else { var nf = document.createElement('div'); nf.className = 'nf'; nf.textContent = 'Sin fotografias en este registro'; df.appendChild(nf); }
+  g('mow').classList.add('open');
+}
+function clDet() { g('mow').classList.remove('open'); }
+function clLbox() { g('lbox').classList.remove('open'); g('limg').src = ''; }
+function selChip(el) {
+  document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active'); tipSel = el.dataset.val;
+}
+function addFotos(inp) {
+  Array.from(inp.files).forEach(function(f) {
+    var rd = new FileReader();
+    rd.onload = function(e) { fotos.push(e.target.result); rendFotos(); };
+    rd.readAsDataURL(f);
+  });
+  inp.value = '';
+}
+function rendFotos() {
+  var gEl = g('fgrid'), c = g('fcnt'); gEl.innerHTML = '';
+  fotos.forEach(function(src, i) {
+    var dv = document.createElement('div'); dv.className = 'ft';
+    var im = document.createElement('img'); im.src = src;
+    var bt = document.createElement('button'); bt.className = 'ftd'; bt.textContent = 'x';
+    bt.onclick = (function(idx) { return function() { fotos.splice(idx,1); rendFotos(); }; })(i);
+    dv.appendChild(im); dv.appendChild(bt); gEl.appendChild(dv);
+  });
+  c.textContent = fotos.length > 0 ? fotos.length+(fotos.length>1?' fotos':' foto') : '';
+}
+function registrar() {
+  var se = g('fSeller').value.trim(), au = g('fAuditor').value.trim(), sk = g('fSKU').value.trim();
+  var ca = parseInt(g('fCant').value)||0, is = g('fIS').value.trim(), ob = g('fObs').value.trim();
+  if (!se||!au||!sk||!tipSel) { showToast('Completa todos los campos obligatorios'); return; }
+  var id = String(Date.now());
+  var reg = {id:id,fecha:new Date().toISOString(),seller:se,auditor:au,sku:sk,tipo:tipSel,cantidad:ca,is:is,obs:ob,fotos:fotos.slice()};
+  regs.unshift(reg); rfil = regs.slice();
+  updDash(); clForm(); showToast('Registrando y guardando en Sheets...'); envGS(reg);
+}
+function envGS(reg) {
+  var el = g('gss'); el.style.display = 'flex'; el.className = 'gss gsl'; el.textContent = 'Guardando en Sheets...';
+  var payload = {id:reg.id,fecha:reg.fecha,seller:reg.seller,auditor:reg.auditor,sku:reg.sku,tipo:reg.tipo,cantidad:reg.cantidad,incidencia:reg.is,observaciones:reg.obs,fotos:JSON.stringify(reg.fotos)};
+  fetch(GS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status==='ok') { el.className='gss gso'; el.textContent='Guardado en Sheets con fotos'; }
+      else { el.className='gss gse'; el.textContent='Error al guardar en Sheets'; }
+    })
+    .catch(function() { el.className='gss gse'; el.textContent='Error de conexion con Sheets'; });
+}
+function clForm() {
+  ['fSeller','fAuditor','fSKU','fCant','fIS','fObs'].forEach(function(id) { g(id).value=''; });
+  document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('active'); });
+  tipSel=''; fotos=[]; rendFotos();
+}
+function updDash() {
+  var r = rfil;
+  s('mT',String(r.reduce(function(a,x){return a+x.cantidad;},0)));
+  s('mNI',String(r.filter(function(x){return x.tipo==='NI';}).reduce(function(a,x){return a+x.cantidad;},0)));
+  s('mNA',String(r.filter(function(x){return x.tipo==='NA';}).reduce(function(a,x){return a+x.cantidad;},0)));
+  s('mSE',String(new Set(r.map(function(x){return x.seller;})).size));
+  rendTable();
+  function rBar(map,bid,lid) {
+    var ents=Object.entries(map).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+    g(bid).textContent=String(Object.keys(map).length);
+    var el=g(lid); el.innerHTML='';
+    if (ents.length===0) { var em=document.createElement('div'); em.className='empty'; em.textContent='Sin datos.'; el.appendChild(em); return; }
+    var top=ents[0][1];
+    ents.forEach(function(e,i) {
+      var br=document.createElement('div'); br.className='br';
+      var bl=document.createElement('span'); bl.className='bl'; bl.textContent=(i+1)+'. '+e[0]; br.appendChild(bl);
+      var bt=document.createElement('div'); bt.className='bt';
+      var bf=document.createElement('div'); bf.className='bf2'; bf.style.width=Math.round(e[1]/(top||1)*100)+'%'; bt.appendChild(bf); br.appendChild(bt);
+      var bn=document.createElement('span'); bn.className='bn'; bn.textContent=String(e[1]); br.appendChild(bn);
+      el.appendChild(br);
+    });
+  }
+  var sm={}; r.forEach(function(x){sm[x.seller]=(sm[x.seller]||0)+x.cantidad;}); rBar(sm,'gSE','gSEL');
+  var tm={}; r.forEach(function(x){tm[x.tipo]=(tm[x.tipo]||0)+x.cantidad;});
+  var tt=Object.values(tm).reduce(function(a,b){return a+b;},0);
+  g('gTI').textContent=String(tt);
+  var etl=g('gTIL'); etl.innerHTML='';
+  if (tt===0) { var em2=document.createElement('div'); em2.className='empty'; em2.textContent='Sin datos.'; etl.appendChild(em2); }
+  else { Object.entries(tm).forEach(function(e) {
+    var br=document.createElement('div'); br.className='br';
+    var bl=document.createElement('span'); bl.className='bl'; bl.textContent=e[0]; br.appendChild(bl);
+    var bt=document.createElement('div'); bt.className='bt';
+    var bf=document.createElement('div'); bf.className='bf2'; bf.style.width=Math.round(e[1]/tt*100)+'%'; bt.appendChild(bf); br.appendChild(bt);
+    var bn=document.createElement('span'); bn.className='bn'; bn.textContent=String(e[1]); br.appendChild(bn);
+    etl.appendChild(br);
+  }); }
+  var km={}; r.forEach(function(x){km[x.sku]=(km[x.sku]||0)+x.cantidad;}); rBar(km,'gSK','gSKL');
+}
+function exportCSV() {
+  if (rfil.length===0) { showToast('No hay registros'); return; }
+  var rows=['Fecha,Seller,Auditor,SKU,Tipo,Cantidad,IS,Observaciones,Fotos'];
+  rfil.forEach(function(r) { rows.push([r.fecha,r.seller,r.auditor,r.sku,r.tipo,r.cantidad,r.is||'',r.obs||'',(r.fotos||[]).length].join(',')); });
+  var b=new Blob([rows.join('\n')],{type:'text/csv'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='auditoria_inp.csv'; a.click();
+}
+function showToast(m) {
+  var t=g('toast'); t.textContent=m; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3000);
+}
+g('bIS').addEventListener('keydown',function(e){if(e.key==='Enter')filIS();});
+cargarHistorial();
+</script>
+</body>
+</html>
